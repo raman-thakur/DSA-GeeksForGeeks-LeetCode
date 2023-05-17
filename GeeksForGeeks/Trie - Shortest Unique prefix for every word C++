@@ -1,0 +1,117 @@
+PROBLEM LINK:-
+https://practice.geeksforgeeks.org/problems/shortest-unique-prefix-for-every-word/1?page=1&category[]=Trie&sortBy=submissions
+
+//{ Driver Code Starts
+//Initial Template for C++
+
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+//User function Template for C++
+
+//User function Template for C++
+
+struct Node{
+  Node *refs[26];
+  int count=0;
+};
+
+class Solution
+{
+    public:
+    vector<string> findPrefixes(string arr[], int n)
+    {
+        //code here
+        Node *root=new Node();
+        
+        for(int i=0;i<n;i++)
+        {
+            string s=arr[i];
+            int l=s.length();
+            
+            Node *temp=root;
+            for(int j=0;j<l;j++)
+            {
+                if(temp->refs[s[j]-'a']==NULL)
+                {
+                    temp->refs[s[j]-'a']=new Node();
+                    // temp->count++;
+                    temp=temp->refs[s[j]-'a'];
+                    temp->count++;
+                }
+                else
+                {
+                    
+                    temp=temp->refs[s[j]-'a'];
+                    temp->count++;
+                }
+            }
+        }
+        
+        vector<string> v;
+        for(int i=0;i<n;i++)
+        {
+            string s=arr[i];
+            int l=s.length();
+            
+            Node *temp=root;
+            string ans="";
+            for(int j=0;j<l;j++)
+            {
+                if(temp->refs[s[j]-'a']->count > 1)
+                {
+                    ans=ans+s[j];
+                    // temp->count[s[i]-'a']++;
+                    temp=temp->refs[s[j]-'a'];
+                }
+                else
+                {
+                    ans=ans+s[j];
+                    v.push_back(ans);
+                    break;
+                    // temp=temp->refs[s[i]-'a'];
+                }
+                
+                if(j==l-1)
+                {
+                    v.push_back(ans);
+                }
+            }
+        }
+        return v;
+        
+    }
+    
+};
+
+//{ Driver Code Starts.
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int n;
+        cin >> n;
+
+        string arr[n];
+        for (int i = 0; i < n; i++)
+            cin >> arr[i];
+            
+        Solution ob;
+        vector<string> ans = ob.findPrefixes(arr, n);
+        
+        for (int i = 0; i < ans.size(); i++)
+            cout << ans[i] <<" ";
+
+
+        cout << "\n";
+
+    }
+
+    return 0;
+}
+
+// } Driver Code Ends
