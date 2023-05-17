@@ -1,0 +1,98 @@
+//{ Driver Code Starts
+//Initial Template for C++
+
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+//User function Template for C++
+
+class Solution {
+    public:
+        // vector<vector<int>> arr;
+        vector<int> par;
+        vector<int> size;
+        int find_par(int ind)
+        {
+            if(par[ind]==ind)
+                return ind;
+                
+            par[ind]=find_par(par[ind]);
+            return par[ind];
+        }
+        
+        void add(int x,int y)
+        {
+            int upx=find_par(x);
+            int upy=find_par(y);
+            if(size[upx]==size[upy])
+            {
+                size[upx]+=size[upy];
+                par[upy]=upx;
+            }
+            else if(size[upx]>size[upy])
+            {
+                par[upy]=upx;
+            }
+            else
+            {
+                par[upy]=upx;
+            }
+        }
+        
+        
+        long long int numberOfPairs(vector<vector<int>> &pairs,int p,int n)
+        {
+            // code here
+            // arr=pairs;
+            par.resize(n);
+            size.resize(n,1);
+            for(int i=0;i<n;i++)
+            {
+                par[i]=i;
+            }
+            for(int i=0;i<p;i++)
+            {
+                add(pairs[i][0],pairs[i][1]);
+            }
+            
+            long long int count[n]={0};
+            for(int i=0;i<n;i++)
+            {
+                int x=find_par(i);
+                count[x]++;
+            }
+            
+            long long int ans=0;
+            long long int total=n;
+            for(int i=0;i<n;i++)
+            {
+                ans+=(count[i]*(total-count[i]));
+                total-=count[i];
+            }
+            
+            return ans;;
+        }
+};
+
+
+
+//{ Driver Code Starts.
+
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        int n,p;
+        cin>>n>>p;
+        vector<vector<int>> pairs(p,vector<int>(2));
+        for(auto &i:pairs)
+            for(auto &j:i)
+                cin>>j;
+        Solution a;
+        cout<<a.numberOfPairs(pairs,p,n)<<endl;
+    }
+}
+// } Driver Code Ends
