@@ -1,0 +1,71 @@
+PROBLEM LINK:-
+https://practice.geeksforgeeks.org/problems/55dbfdc246f3f62d6a7bcee7664cacf6be345527/1
+
+//{ Driver Code Starts
+//Initial Template for C++
+
+#include<bits/stdc++.h> 
+using namespace std; 
+
+// } Driver Code Ends
+//User function Template for C++
+
+class Solution{   
+public:
+    int addMinChar(string str){    
+        //code here
+        int n=str.size();
+        
+        string str1=str;
+        reverse(str1.begin(),str1.end());
+        str1=str+"$"+str1;
+        // cout<<str1<<" "<<(2*n)+1;
+        int lps[(2*n)+1];
+        lps[0]=0;
+        int len=0;
+        int i=1;
+        while(i<=(2*n))
+        {
+          if(str1[len]==str1[i])
+          {
+              len++;
+              lps[i]=len;
+              i++;
+          }
+          else
+          {
+              if(len==0)
+              {
+                  lps[i]=0;
+                  i++;
+              }
+                
+                
+              else
+              {
+                  len=lps[len-1];
+              }
+          }
+        }
+        return n-lps[(2*n)];
+    }
+};
+
+//{ Driver Code Starts.
+
+
+int main() 
+{ 
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        string str;
+        cin >> str;
+        
+        Solution ob;
+        cout << ob.addMinChar(str) << endl;
+    }
+    return 0; 
+} 
+// } Driver Code Ends
