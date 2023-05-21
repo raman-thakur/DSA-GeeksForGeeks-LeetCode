@@ -1,0 +1,63 @@
+PROBLEM LINK:-
+https://practice.geeksforgeeks.org/batch/dsa-4/track/DSASP-Graph/problem/steps-by-knight5927
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution 
+{
+    public:
+    //Function to find out minimum steps Knight needs to reach target position.
+	int minStepToReachTarget(vector<int>&pos,vector<int>&target,int n)
+	{
+	    // Code here
+	    vector<vector<int>> dp(n,vector<int>(n,-1));
+	    queue<pair<int,int>> q;
+	    q.push({pos[0]-1,pos[1]-1});
+	    dp[pos[0]-1][pos[1]-1]=0;
+	    int addx[]={2,2,-2,-2,1,-1,1,-1};
+	    int addy[]={1,-1,1,-1,2,2,-2,-2};
+	    while(!q.empty())
+	    {
+	        int x=q.front().first;
+	        int y=q.front().second;
+
+	        q.pop();
+	        
+	        for(int i=0;i<8;i++)
+	        {
+	            int nextx=x+addx[i];
+	            int nexty=y+addy[i];
+	            
+	            if(nextx<0 || nextx>n-1 || nexty<0 || nexty>n-1 || dp[nextx][nexty]!=-1)
+	                continue;
+	           
+	           q.push({nextx,nexty});
+	           dp[nextx][nexty]=1+dp[x][y];
+	        }
+	    }
+	    
+	    return dp[target[0]-1][target[1]-1];
+	}
+};
+
+//{ Driver Code Starts.
+int main(){
+	int tc;
+	cin >> tc;
+	while(tc--){
+		vector<int>KnightPos(2);
+		vector<int>TargetPos(2);
+		int N;
+		cin >> N;
+		cin >> KnightPos[0] >> KnightPos[1];
+		cin >> TargetPos[0] >> TargetPos[1];
+		Solution obj;
+		int ans = obj.minStepToReachTarget(KnightPos, TargetPos, N);
+		cout << ans <<"\n";
+	}
+	return 0;
+}
+// } Driver Code Ends
