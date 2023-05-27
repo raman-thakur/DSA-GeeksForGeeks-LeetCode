@@ -1,0 +1,90 @@
+problem link:-
+https://practice.geeksforgeeks.org/problems/minimum-cost-path3833/0
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+
+
+class Solution
+{
+    public:
+    //Function to return the minimum cost to react at bottom
+	//right cell from top left cell.
+	int dp[501][501];
+	int arr1[4]={0,0,-1,+1};
+	int arr2[4]={1,-1,0,0};
+	priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>>pq;
+	int n;
+    void relax(int i,int j,int dis,vector<vector<int>>& v)
+    {
+        for(int k=0;k<4;k++)
+        {
+            if(i+arr1[k]>=0 && i+arr1[k]<n && j+arr2[k]>=0 && j+arr2[k]<n && dp[i+arr1[k]][j+arr2[k]]>dis+v[i+arr1[k]][j+arr2[k]])
+            {
+                dp[i+arr1[k]][j+arr2[k]]=dis+v[i+arr1[k]][j+arr2[k]];
+                pq.push({dp[i+arr1[k]][j+arr2[k]],{i+arr1[k],j+arr2[k]}});
+                // relax(i+arr1[k],j+arr2[k],dis+v[i][j],v);
+            }
+        }
+        return;
+    }
+    int minimumCostPath(vector<vector<int>>& v) 
+    {
+        // Code here
+        n=v.size();
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                dp[i][j]=INT_MAX;
+            }
+        }
+        pq.push({v[0][0],{0,0}});
+        // cout<<pq.top().first;
+        dp[0][0]=v[0][0];
+        while(!pq.empty())
+        {
+            int x=pq.top().first;
+            int i=pq.top().second.first;
+            int j=pq.top().second.second;
+            
+            relax(i,j,x,v);
+            
+            // cout<<x<<i<<j<<"\n";
+            pq.pop();
+        }
+        // for(int i=0;i<n;i++)
+        // {
+        //     for(int j=0;j<n;j++)
+        //     {
+        //         cout<<dp[i][j]<<" ";
+        //     }
+        //     cout<<"\n";
+        // }
+        return dp[n-1][n-1];
+    }
+};
+
+//{ Driver Code Starts.
+int main(){
+	int tc;
+	cin >> tc;
+	while(tc--){
+		int n;
+		cin >> n;
+		vector<vector<int>>grid(n, vector<int>(n, -1));
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < n; j++){
+				cin >> grid[i][j];
+			}
+		}
+		Solution obj;
+		int ans = obj.minimumCostPath(grid);
+		cout << ans << "\n";
+	}
+	return 0;
+}
+// } Driver Code Ends
