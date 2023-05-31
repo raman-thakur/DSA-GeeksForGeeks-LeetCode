@@ -1,0 +1,104 @@
+Problem Link:- 
+https://practice.geeksforgeeks.org/problems/detect-cycle-using-dsu/1
+
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+    public:
+    //Function to detect cycle using DSU in an undirected graph.
+    int par[10005];
+int size[10005];
+map<pair<int,int>,int> m;
+int ultPar(int i)
+{
+    if(par[i]==i)
+        return i;
+
+    par[i]=ultPar(par[i]);
+    return par[i];
+}
+
+void add(int a,int b)
+{
+    int upara=ultPar(a);
+    int uparb=ultPar(b);
+
+    if(size[upara]==size[uparb])
+    {
+        par[uparb]=upara;
+        size[upara]+=size[uparb];
+    }
+    else if(size[upara]>size[uparb])
+    {
+        par[uparb]=upara;
+        size[upara]+=size[uparb];
+    }
+    else
+    {
+        par[upara]=uparb;
+        size[uparb]+=size[upara];
+    }
+}
+
+int find(int a,int b)
+{
+    int ultpara=ultPar(a);
+    int ultparb=ultPar(b);
+
+    // cout<<ultpara<<" "<<ultparb<<"\n";
+    
+    if(m[{b,a}]==1)
+    return 0;
+    
+    return ultparb==ultpara;
+}
+
+	int detectCycle(int V, vector<int>adj[])
+	{
+	    // Code here
+	    for(int i=0;i<10005;i++)
+	    {
+	        par[i]=i;
+	        size[i]=1;
+	    }
+	    for(int i=0;i<V;i++)
+	    {
+	        for(int j=0;j<adj[i].size();j++)
+	        {
+	            m[{i,adj[i][j]}]=1;
+	            int temp=find(i,adj[i][j]);
+	            if(temp==1)
+	            return 1;
+	            
+	            add(i,adj[i][j]);
+	        }
+	    }
+	    return 0;
+	}
+};
+
+//{ Driver Code Starts.
+int main(){
+	int tc;
+	cin >> tc;
+	while(tc--){
+		int V, E;
+		cin >> V >> E;
+		vector<int>adj[V];
+		for(int i = 0; i < E; i++){
+			int u, v;
+			cin >> u >> v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		Solution obj;
+		int ans = obj.detectCycle(V, adj);
+		cout << ans <<"\n";	}
+	return 0;
+}
+// } Driver Code Ends
