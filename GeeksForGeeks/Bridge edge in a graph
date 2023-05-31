@@ -1,0 +1,70 @@
+Problem link:-
+https://practice.geeksforgeeks.org/batch/dsa-4/track/DSASP-Graph/problem/bridge-edge-in-graph
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+    //Function to find if the given edge is a bridge in graph.
+    void dfs(int src,int v,vector<int>adj[],
+	    unordered_map<int,bool>&visited,int c,int d){
+	        visited[src]=1;
+	        
+	        for(int x:adj[src]){
+	            //ingnore c-d edge
+	            if((src==c && x==d) || (src==d && x==c)){
+	                continue;
+	            }
+	            if(!visited[x]){
+	                dfs(x,v,adj,visited,c,d);
+	            }
+	        }
+	    }
+	
+	
+    //Function to find if the given edge is a bridge in graph.
+    int isBridge(int V, vector<int> adj[], int c, int d) 
+    {
+        unordered_map<int,bool>visited;
+        
+        dfs(c,V,adj,visited,c,d);
+        
+        return !visited[d];
+    }
+};
+
+//{ Driver Code Starts.
+
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+        vector<int> adj[V];
+        int i=0;
+        while (i++<E) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back (v);
+            adj[v].push_back (u);
+        }
+        
+        int c,d;
+        cin>>c>>d;
+        
+        Solution obj;
+    	cout << obj.isBridge(V, adj, c, d) << "\n";
+    }
+
+    return 0;
+}
+
+
+// } Driver Code Ends
