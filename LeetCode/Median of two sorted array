@@ -1,0 +1,114 @@
+Problem Link:-
+https://leetcode.com/problems/median-of-two-sorted-arrays/
+
+class Solution {
+public:
+    int find_lesser(vector<int>& nums,int val)
+    {
+        int l=0,r=nums.size()-1;
+        int ans=r+1;
+        while(l<=r)
+        {
+            int mid=(l+r)/2;
+            if(nums[mid]>=val)
+            {
+                ans=mid;
+                r=mid-1;
+            }
+            else
+            {
+                l=mid+1;
+            }
+        }
+        return ans;
+    }
+    int find_lesser_equal(vector<int>& nums,int val)
+    {
+        int l=0,r=nums.size()-1;
+        int ans=0;
+        while(l<=r)
+        {
+            int mid=(l+r)/2;
+            if(nums[mid]>val)
+            {
+                r=mid-1;
+            }
+            else
+            {
+                ans=mid+1;
+                l=mid+1;
+            }
+        }
+        return ans;
+    }
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int len1=nums1.size(),len2=nums2.size();
+        int low=INT_MAX;
+        int high=INT_MIN;
+        if(len1>0){
+            low=min(low,nums1[0]);
+            high=max(high,nums1[len1-1]);
+        }
+        if(len2>0){
+            low=min(low,nums2[0]);
+            high=max(high,nums2[len2-1]);
+        }
+        
+        // int low=min(nums1[0],nums2[0]);
+        // int high=max(nums1[len1-1],nums2[len2-1]);
+        int ans=0;
+        while(low<=high)
+        {
+            int mid=(low+high)/2;
+            int count_lesser=0;
+            count_lesser+=(find_lesser(nums1,mid));
+            count_lesser+=(find_lesser(nums2,mid));
+
+            if(count_lesser<((len1+len2)-count_lesser))
+            {
+                ans=mid;
+                low=mid+1;
+            }
+            else
+            {
+                high=mid-1;
+            }
+        }
+        if((len1+len2)%2==1)
+        return ans;
+        else
+        {
+            int ans1=0;
+            low=INT_MAX;
+        high=INT_MIN;
+        if(len1>0){
+            low=min(low,nums1[0]);
+            high=max(high,nums1[len1-1]);
+        }
+        if(len2>0){
+            low=min(low,nums2[0]);
+            high=max(high,nums2[len2-1]);
+        }
+            while(low<=high)
+            {
+                int mid=(low+high)/2;
+                int count_lesser_equal=0;
+                count_lesser_equal+=(find_lesser_equal(nums1,mid));
+                count_lesser_equal+=(find_lesser_equal(nums2,mid));
+
+                if(count_lesser_equal>((len1+len2)-count_lesser_equal))
+                {
+                    ans1=mid;
+                    high=mid-1;
+                }
+                else
+                {
+                    low=mid+1;
+                }
+            }
+            cout<<ans<<" "<<ans1<<"\n";
+            double res=(ans+ans1)/2.0;
+            return res;
+        }
+    }
+};
