@@ -1,0 +1,71 @@
+problem link:- https://leetcode.com/problems/find-unique-binary-string/description/?envType=daily-question&envId=2023-11-16
+
+code:-
+class Solution {
+public:
+    struct node{
+        struct node* child[2]={NULL};
+        int end=1;
+    };
+    node* root=new node();
+    void insert(string str)
+    {
+        node* curr=root;
+        for(int i=0;i<str.size();i++)
+        {
+            if(str[i]=='0')
+            {
+                if(curr->child[0]==NULL)
+                {
+                    curr->child[0]=new node();
+                    curr->end=0;
+                }
+                 curr=curr->child[0];
+            }
+            else
+            {
+                if(curr->child[1]==NULL)
+                {
+                    curr->child[1]=new node();
+                    curr->end=0;
+                }
+                 curr=curr->child[1];
+            }
+        }
+    }
+    string res;
+    void findans(string temp,node *root)
+    {
+        if(root->end==1)
+        return;
+
+        if(root->child[0]==NULL)
+        {
+            res=temp+"0";
+            return;
+        }
+        else if(root->child[1]==NULL)
+        {
+            res=temp+"1";
+            return;
+        } 
+        else
+        {
+            findans(temp+"0",root->child[0]);
+            findans(temp+"1",root->child[1]);
+            return;
+        }
+    }
+    string findDifferentBinaryString(vector<string>& nums) {
+        for(int i=0;i<nums.size();i++)
+        {
+            insert(nums[i]);
+        }
+        findans("",root);
+        for(int i=res.size();i<nums.size();i++)
+        {
+            res+="0";
+        }
+        return res;
+    }
+};
