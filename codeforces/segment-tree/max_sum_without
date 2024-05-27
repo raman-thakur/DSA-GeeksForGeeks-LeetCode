@@ -1,0 +1,91 @@
+problem link:-
+https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll int
+
+ll a[50001],seg[100001][4];
+
+void build_seg(ll ind,ll low,ll high)
+{
+    if(low==high){
+    	seg[ind][0]=0;
+    	seg[ind][1]=0;
+    	seg[ind][2]=0;
+    	seg[ind][3]=max(0,a[low]);
+        return;
+    }
+    ll mid=(low+high)/2;
+    ll left=(2*ind)+1;
+    ll right=(2*ind)+2;
+    build_seg(left,low,mid);
+    build_seg(right,mid+1,high);
+
+
+    seg[ind][0]=max(seg[left][2]+seg[right][3],seg[left][0]+seg[right][0]);
+    seg[ind][1]=max(seg[left][1]+seg[right][1],seg[left][3]+seg[right][2]);
+    seg[ind][2]=max(seg[left][0]+seg[right][2],seg[left][2]+seg[right][1]);
+    seg[ind][3]=max(seg[left][3]+seg[right][0],seg[left][1]+seg[right][3]);
+    return;
+}
+
+void point_update(ll ind,ll low,ll high,ll pos,ll val)
+{
+	if(low==high)
+	{
+		a[pos]=val;
+		seg[ind][0]=0;
+    	seg[ind][1]=0;
+    	seg[ind][2]=0;
+    	seg[ind][3]=max(0,val);
+        return;
+	}
+	ll mid=(low+high)/2;
+	ll left=(2*ind)+1;
+    ll right=(2*ind)+2;
+	if(low<=pos && pos>=mid)
+		point_update(left,low,mid,pos,val);
+	else
+		point_update(left,mid+1,high,pos,val);
+
+
+	seg[ind][0]=seg[left][0]+seg[right][3];
+    seg[ind][1]=seg[left][3]+seg[right][1];
+    seg[ind][2]=seg[left][0]+seg[right][1];
+    seg[ind][3]=max(seg[left][3]+seg[right][0],seg[left][1]+seg[right][3]);
+    return;
+}
+int main()
+{
+	#ifndef ONLINE_JUDGE
+		freopen("input.txt","r",stdin);
+		freopen("output.txt","w",stdout);
+	#endif
+
+	int n;
+	cin>>n;
+
+	for(int i=0;i<n;i++)
+	{
+		cin>>a[i];
+	}
+
+	build_seg(0,0,n-1);
+
+	int m;
+	cin>>m;
+	// vector<pair<int,int>> query;
+	
+	for(int i=0;i<m;i++)
+	{
+		int x,y;
+		cin>>x>>y;
+		// query.push_back({x,y});
+		point_update(0,0,n-1,x,y);
+		cout<<seg[0]<<"\n";
+	}
+
+
+	return 0;
+}
