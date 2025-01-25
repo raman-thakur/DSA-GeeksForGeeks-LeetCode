@@ -1,0 +1,112 @@
+problem link :- https://leetcode.com/problems/maximum-and-minimum-sums-of-at-most-size-k-subsequences/
+
+//to find mmi of a when mod=1e9+7 find pow(a,mod-2)%mod t&c applied but dont worry problem setter will take care of that
+//nCr=n-1Cr-1+nCr-1  (binomial property you are dumb if you dont know this..)
+
+
+#define ll long long int
+class Solution {
+public:
+    ll fact[100005];
+    ll mod=1e9+7;
+    map<ll,ll> m;
+
+    ll mod_power(ll a,ll b)
+    {
+        if(b==0)
+        return 1;
+
+        ll temp=mod_power(a,b/2);
+        if(b%2)
+        return (((temp*temp)%mod)*a)%mod;
+        else
+        return (((temp*temp)%mod))%mod;
+    }
+
+    ll m2_power(ll a,ll b)
+    {
+        if(b==0)
+        return 1;
+
+        if(m.find(a)!=m.end())
+        return m[a];
+
+        ll temp=mod_power(a,b/2);
+        if(b%2)
+        m[a] = (((temp*temp)%mod)*a)%mod;
+        else
+        m[a] = (((temp*temp)%mod))%mod;
+
+        return m[a];
+    }
+
+    ll mmi(ll a)
+    {
+        ll temp=m2_power(a,mod-2);
+        return temp%mod;
+    }
+
+    void initiate_fact()
+    {
+        fact[0]=1;
+        fact[1]=1;
+        for(ll i=2;i<100005;i++)
+        {
+            fact[i]=(fact[i-1]*i)%mod;
+        }
+        return;
+    }
+
+    ll ncr_mod(ll n,ll r)
+    {
+        if(r>n)
+        return 0;
+        if(r==0)
+        return 1;
+
+        ll ans=fact[n];
+        ll den=(fact[r]*fact[n-r])%mod;
+        den=mmi(den);
+        ans=(ans*den)%mod;
+        return ans;
+    }
+
+    
+
+    int minMaxSums(vector<int>& arr, int k) {
+        sort(arr.begin(),arr.end());
+        ll ans=0;
+        ll n=arr.size();
+        initiate_fact();
+
+        vector<vector<ll>> ncr(arr.size() + 1, vector<ll> (k + 1,0));
+        
+        ncr[0][0] = 1;
+        for (ll i = 1; i <= arr.size(); i++) {
+            ncr[i][0] = 1;
+            for (int r = 1; r <= k; r++) 
+                ncr[i][r] = (ncr[i - 1][r - 1] + ncr[i - 1][r]) % mod;
+        } 
+        for(int i=0;i<arr.size();i++)
+        {
+            ll a=i;
+            ll count=0;
+            for(ll j=0;j<k;j++)
+            {
+                if(j>a)
+                break;
+                count+=ncr[a][j];
+                count%=mod;
+            }
+            ans=(ans+(1ll*arr[i]*count)%mod)%mod;
+
+
+            
+            ans=(ans+(1ll*arr[(n-1)-i]*count)%mod)%mod;
+
+        }
+        return (int)ans;
+    }
+    
+};
+
